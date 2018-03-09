@@ -1,10 +1,10 @@
 Deezer = {};
 
-Deezer.whitelistedFields = [];
+Deezer.whitelistedFields = ['id', 'name', 'email', 'firstname', 'lastname'];
 
 OAuth.registerService('deezer', 2, null, function (query) {
   var response = getAccessToken(query);
-  var identity = getIdentity(reponse.accessToken);
+  var identity = getIdentity(response.accessToken);
 
   var serviceData = {
     accessToken: OAuth.sealSecret(response.accessToken),
@@ -35,8 +35,7 @@ var getAccessToken = function (query) {
         params: {
           code: query.code,
           app_id: config.clientId,
-          secret: OAuth.openSecret(config.secret),
-          output: 'json'
+          secret: OAuth.openSecret(config.secret)
         }
       });
   } catch (err) {
@@ -44,12 +43,14 @@ var getAccessToken = function (query) {
       {response: err.response});
   }
 
-  if (response.data.error) {
-    throw new Error('Failed to complete OAuth handshake with Deezer. ' + response.data.error);
+  var decodedResponse = queryStringToJSON(response.content);
+
+  if (decodedResponse.error) {
+    throw new Error('Failed to complete OAuth handshake with Deezer. ' + decodedResponse.error);
   } else {
     return {
-      accessToken: response.data.access_token,
-      expires: response.data.expires
+      accessToken: decodedResponse.access_token,
+      expires: decodedResponse.expires
     };
   }
 };
@@ -66,6 +67,21 @@ var getIdentity = function (accessToken) {
     throw _.extend(new Error('Failed to fetch identity from Deezer. ' + err.message),
       {response: err.response});
   }
+};
+
+// Helper function which takes the content of a string formatted as HTTP query
+// and encodes it to JSON.
+// @param query {string} String of a query without the beginning '?'.
+var queryStringToJSON = function (query) {
+  var result = {};
+
+  if (query) {
+    query.split('&').map((item) => {
+      var [k, v] = item.split('=');
+      result[k] = v ? v : null;
+    });
+  }
+  return result;
 };
 
 Deezer.retrieveCredential = function (credentialToken, credentialSecret) {
