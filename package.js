@@ -1,6 +1,6 @@
 Package.describe({
   name: 'pyrax:meteor-deezer-oauth',
-  version: '0.0.1',
+  version: '1.0.0',
   summary: 'Deezer OAuth flow',
   git: 'https://github.com/pyrax/meteor-deezer-oauth.git'
 });
