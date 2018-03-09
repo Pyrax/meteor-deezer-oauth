@@ -29,8 +29,9 @@ Deezer.requestCredential = function (options, credentialRequestCompleteCallback)
   var loginUrl =
     'https://connect.deezer.com/oauth/auth.php' +
     '?app_id=' + config.clientId +
-    '&redirect_uri=' + OAuth._redirectUri('github', config) +
-    '&perms=' + flatPermissions;
+    '&redirect_uri=' + OAuth._redirectUri('deezer', config) +
+    '&perms=' + flatPermissions +
+    '&state=' + OAuth._stateParam(loginStyle, credentialToken, options && options.redirectUrl);
 
   OAuth.launchLogin({
     loginService: 'deezer',
