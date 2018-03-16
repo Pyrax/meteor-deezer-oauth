@@ -10,7 +10,7 @@ to use Deezer OAuth as a login-method. Just follow the instructions of that URL.
 - Add the package to your Meteor application: `meteor add pyrax:meteor-deezer-oauth`
 - Configure your app in the Deezer developers backend - the redirect URL should be: _http&#58;//<example.app>/\_oauth/deezer_
 - Configure the service:
-```
+```javascript
 ServiceConfiguration.configurations.update(
   { 'service': 'deezer' },
   {
